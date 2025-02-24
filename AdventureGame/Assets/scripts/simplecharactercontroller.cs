@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[RequireComponent(typeof(CharacterAnimationController))]
 public class simplecharactercontroller : MonoBehaviour
 {
 
@@ -16,9 +16,9 @@ public class simplecharactercontroller : MonoBehaviour
     private Vector3 movementVector = Vector3.zero;
 
     // Start is called before the first frame update
-    void Start()
+   private void Start()
     {
-        // Cache references to components
+        
         controller = GetComponent<CharacterController>();
         thisTransform = transform;
 
@@ -30,21 +30,22 @@ public class simplecharactercontroller : MonoBehaviour
         MoveCharacter();
         KeepCharacterOnXAxis();
         ApplyGravity();
-        if (Input.GetButtonDown("Jump") && controller.isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(JumpForce * -2f * gravity);
-            //audiosource.Play();
-            //StaminaFunction();
-        }
+       
+        
 
     }
 
     private void MoveCharacter()
     {
-        movementVector.x = Input.GetAxis("Horizontal");
-        
-        movementVector *= (moveSpeed  * Time.deltaTime);
-        controller.Move(movementVector);
+        var moveInput = Input.GetAxis("Horizontal");
+        var move =  new Vector3(moveInput, 0f, 0f) * (moveSpeed * Time.deltaTime);
+        controller.Move(move);
+
+        //jumping
+        if(Input.GetButtonDown("Jump") && controller.isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(JumpForce * -2f * gravity);
+        }
     }
     
     private void ApplyGravity()
